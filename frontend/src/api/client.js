@@ -1,35 +1,33 @@
-import axios from "axios";
+// Static mode enabled — no backend required
 
-const resolveBaseURL = () => {
-  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
-  if (typeof window !== "undefined") return "/api";
-  return "http://localhost:5000/api";
+const api = {
+  get: async () => {
+    return {
+      data: [
+        {
+          id: "seed-1",
+          title: "Paneer Butter Masala",
+          image: "https://source.unsplash.com/600x400/?paneer,butter,masala",
+          time: "30 min",
+          difficulty: "Medium"
+        },
+        {
+          id: "seed-2",
+          title: "Chicken Biryani",
+          image: "https://source.unsplash.com/600x400/?chicken,biryani",
+          time: "45 min",
+          difficulty: "Hard"
+        },
+        {
+          id: "seed-3",
+          title: "White Sauce Pasta",
+          image: "https://source.unsplash.com/600x400/?white,sauce,pasta",
+          time: "20 min",
+          difficulty: "Easy"
+        }
+      ]
+    };
+  }
 };
-
-const api = axios.create({
-  baseURL: resolveBaseURL()
-});
-
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    const status = error?.response?.status;
-    const path = error?.config?.url || "";
-    const isAuthEndpoint = path.includes("/auth/login") || path.includes("/auth/register");
-    if (status === 401 && !isAuthEndpoint) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-    }
-    return Promise.reject(error);
-  }
-);
 
 export default api;

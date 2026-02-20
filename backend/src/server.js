@@ -1,3 +1,7 @@
+app.get("/", (req, res) => {
+  res.send("Food Recipe API is running 🚀");
+});
+
 import app from "./app.js";
 import connectDB from "./config/db.js";
 
